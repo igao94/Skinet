@@ -1,4 +1,5 @@
-﻿using Core.Entities;
+﻿using API.RequestHelpers;
+using Core.Entities;
 using Core.Interfaces;
 using Core.Specifications;
 using Microsoft.AspNetCore.Mvc;
@@ -14,7 +15,13 @@ public class ProductsController(IGenericRepository<Product> repo) : ControllerBa
     {
         var spec = new ProductSpecification(specParams);
 
-        return Ok(await repo.ListAllWithSpecAsync(spec));
+        var products = await repo.ListAllWithSpecAsync(spec);
+
+        var count = await repo.CountAsync(spec);
+
+        var pagination = new Pagination<Product>(specParams.PageIndex, specParams.PageSize, count, products);
+
+        return Ok(pagination);
     }
 
     [HttpGet("{id:int}")]
