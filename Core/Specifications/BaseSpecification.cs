@@ -23,9 +23,9 @@ public class BaseSpecification<T>(Expression<Func<T, bool>>? criteria) : ISpecif
 
     public IQueryable<T> ApplyCriteria(IQueryable<T> query)
     {
-        if (criteria is not null)
+        if (Criteria is not null)
         {
-            query = query.Where(criteria);
+            query = query.Where(Criteria);
         }
 
         return query;

@@ -24,4 +24,4 @@ public class ProductSpecification : BaseSpecification<Product>
                 break;
         }
     }
-}
+}   

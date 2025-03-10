@@ -20,10 +20,7 @@ public class ProductSpecParams
     {
         get => _brands;
 
-        set
-        {
-            _brands = value.SelectMany(x => x.Split(',', StringSplitOptions.RemoveEmptyEntries)).ToList();
-        }
+        set => _brands = value.SelectMany(x => x.Split(',', StringSplitOptions.RemoveEmptyEntries)).ToList();
     }
 
     private List<string> _types = [];
@@ -32,10 +29,7 @@ public class ProductSpecParams
     {
         get => _types;
 
-        set
-        {
-            _types = value.SelectMany(x => x.Split(',', StringSplitOptions.RemoveEmptyEntries)).ToList();
-        }
+        set => _types = value.SelectMany(x => x.Split(',', StringSplitOptions.RemoveEmptyEntries)).ToList();
     }
 
     public string? Sort { get; set; }
