@@ -35,10 +35,7 @@ public class PaymentService(IConfiguration config,
 
             if (productItem is null) return null;
 
-            if (item.Price != productItem.Price)
-            {
-                item.Price = productItem.Price;
-            }
+            if (item.Price != productItem.Price) item.Price = productItem.Price;
         }
 
         var service = new PaymentIntentService();
@@ -49,7 +46,7 @@ public class PaymentService(IConfiguration config,
         {
             var options = new PaymentIntentCreateOptions
             {
-                Amount = (long)cart.Items.Sum(x => x.Quantity * (x.Price * 100)) + (long) shippingPrice * 100,
+                Amount = (long)cart.Items.Sum(x => x.Quantity * (x.Price * 100)) + (long)shippingPrice * 100,
                 Currency = "usd",
                 PaymentMethodTypes = ["card"]
             };
