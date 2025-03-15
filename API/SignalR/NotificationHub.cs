@@ -8,7 +8,7 @@ namespace API.SignalR;
 [Authorize]
 public class NotificationHub : Hub
 {
-    private static readonly ConcurrentDictionary<string, string> UserConnections = [];
+    private static readonly ConcurrentDictionary<string, string> UserConnections = new();
 
     public override Task OnConnectedAsync()
     {
