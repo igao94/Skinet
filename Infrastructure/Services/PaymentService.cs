@@ -5,15 +5,21 @@ using Stripe;
 
 namespace Infrastructure.Services;
 
-public class PaymentService(IConfiguration config,
-    ICartService cartService,
-    IUnitOfWork unitOfWork) : IPaymentService
+public class PaymentService : IPaymentService
 {
+    private readonly ICartService _cartService;
+    private readonly IUnitOfWork _unitOfWork;
+
+    public PaymentService(IConfiguration config, ICartService cartService, IUnitOfWork unitOfWork)
+    {
+        _cartService = cartService;
+        _unitOfWork = unitOfWork;
+        StripeConfiguration.ApiKey = config["StripeSettings:SecretKey"];
+    }
+
     public async Task<ShoppingCart?> CreateOrUpdatePaymentIntentAsync(string cartId)
     {
-        StripeConfiguration.ApiKey = config["StripeSettings:SecretKey"];
-
-        var cart = await cartService.GetCartAsync(cartId);
+        var cart = await _cartService.GetCartAsync(cartId);
 
         if (cart is null) return null;
 
@@ -21,7 +27,7 @@ public class PaymentService(IConfiguration config,
 
         if (cart.DeliveryMethodId.HasValue)
         {
-            var deliveryMethod = await unitOfWork.Repository<DeliveryMethod>()
+            var deliveryMethod = await _unitOfWork.Repository<DeliveryMethod>()
                 .GetByIdAsync((int)cart.DeliveryMethodId);
 
             if (deliveryMethod is null) return null;
@@ -31,7 +37,7 @@ public class PaymentService(IConfiguration config,
 
         foreach (var item in cart.Items)
         {
-            var productItem = await unitOfWork.Repository<Core.Entities.Product>().GetByIdAsync(item.ProductId);
+            var productItem = await _unitOfWork.Repository<Core.Entities.Product>().GetByIdAsync(item.ProductId);
 
             if (productItem is null) return null;
 
@@ -67,8 +73,22 @@ public class PaymentService(IConfiguration config,
             intent = await service.UpdateAsync(cart.PaymentIntentId, options);
         }
 
-        await cartService.SetCartAsync(cart);
+        await _cartService.SetCartAsync(cart);
 
         return cart;
+    }
+
+    public async Task<string> RefundPaymentAsync(string paymentIntentId)
+    {
+        var refundOptions = new RefundCreateOptions()
+        {
+            PaymentIntent = paymentIntentId,
+        };
+
+        var refundService = new RefundService();
+
+        var result = await refundService.CreateAsync(refundOptions);
+
+        return result.Status;
     }
 }
