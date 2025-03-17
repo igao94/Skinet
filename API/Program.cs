@@ -25,6 +25,8 @@ builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepositor
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
+builder.Services.AddScoped<ICouponService, CouponService>();
+
 builder.Services.AddCors();
 
 builder.Services.AddSingleton<IConnectionMultiplexer>(config =>

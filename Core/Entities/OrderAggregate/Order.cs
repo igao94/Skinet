@@ -11,8 +11,9 @@ public class Order : BaseEntity, IDtoConvertible
     public PaymentSummary PaymentSummary { get; set; } = null!;
     public List<OrderItem> OrderItems { get; set; } = [];
     public decimal Subtotal { get; set; }
+    public decimal Discount { get; set; }
     public OrderStatus Status { get; set; } = OrderStatus.Pending;
     public required string PaymentIntentId { get; set; }
 
-    public decimal GetTotal() => Subtotal + DeliveryMethod.Price;
+    public decimal GetTotal() => Subtotal - Discount + DeliveryMethod.Price;
 }

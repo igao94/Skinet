@@ -60,6 +60,7 @@ public class OrdersController(ICartService cartService,
             DeliveryMethod = deliveryMethod,
             ShippingAddress = createOrderDto.ShippingAddress,
             Subtotal = items.Sum(x => x.Price * x.Quantity),
+            Discount = createOrderDto.Discount,
             PaymentSummary = createOrderDto.PaymentSummary,
             PaymentIntentId = cart.PaymentIntentId,
             BuyerEmail = email
